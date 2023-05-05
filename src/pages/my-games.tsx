@@ -1,8 +1,8 @@
 import Head from 'next/head';
 import Page from '~/components/page';
 
-function myGames() {
+function MyGames() {
     return <Page title="My games">my games</Page>;
 }
 
-export default myGames;
+export default MyGames;

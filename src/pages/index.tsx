@@ -2,42 +2,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import Page from '~/components/page';
 import BannerCarousel from '~/components/bannerCarousel';
-
-import { CgSearch } from 'react-icons/cg';
 import Carousel from '~/components/carousel';
 import Button from '~/components/button';
+import SearchBar from '~/components/searchBar';
 
 export default function Home() {
     return (
         <Page title="Free indie games | Play & upload your game">
-            <div className="flex items-center h-24 sticky top-0 z-50 bg-primary">
-                <div className="flex items-center rounded-full px-3 sm:max-w-md bg-secondary-2 focus-within:bg-secondary-1 transition-colors duration-75">
-                    <CgSearch className="text-sm ml-2 mr-1" color="#ccc" />
-                    <input
-                        type="text"
-                        name="search"
-                        className="block flex-1 border-0 outline-none  bg-transparent py-2 px-2 text-white  placeholder:text-neutral-400  text-sm sm:leading-6 rounded-full"
-                        placeholder="Search game"
-                        autoComplete="off"
-                    />
-                </div>
-                <ul className="flex text-neutral-100 text-sm tracking-wider items-center mx-4">
-                    <li className=" transition-opacity ease-in-out opacity-70 hover:opacity-100">
-                        <Link href={'/'} className="flex items-center h-10 px-3">
-                            Popular
-                        </Link>
-                    </li>
-                    <li className=" transition-opacity ease-in-out opacity-70 hover:opacity-100">
-                        <Link href={'/'} className="flex items-center h-10 px-3">
-                            New
-                        </Link>
-                    </li>
-                </ul>
-            </div>
+            <SearchBar />
             <BannerCarousel
                 maxHeight={500}
                 allowTouchMove={false}
-                autoplay={{ delay: 8000, disableOnInteraction: true }}
+                autoplay={{ delay: 8000, disableOnInteraction: false }}
                 slides={[
                     {
                         banner: '/game1.avif',

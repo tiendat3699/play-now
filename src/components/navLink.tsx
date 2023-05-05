@@ -6,11 +6,10 @@ import { ReactNode } from 'react';
 interface NavLinkProps {
     href: string;
     children: ReactNode;
-    props?: ReactNode;
     className?: string | ((active: boolean) => string | undefined);
 }
 
-function NavLink({ href, children, className, ...props }: NavLinkProps) {
+function NavLink({ href, children, className }: NavLinkProps) {
     const router = useRouter();
 
     const getClasses = (): string | undefined => {

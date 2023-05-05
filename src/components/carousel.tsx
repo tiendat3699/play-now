@@ -90,7 +90,7 @@ function Carousel({ title, link, autoplay, maxHeight, allowTouchMove, loop, slid
                                         title="Red Fall"
                                         link="/"
                                         poster="tiendat"
-                                        description="Rule a fantasy realm of your own design! Explore new magical realms in Age of Wonders’ signature blend of 4X strategy and turn-based tactical combat. Control a faction that grows and changes as you expand your empire with each turn!"
+                                        preview={false}
                                     />
                                 </SwiperSlide>,
                             );

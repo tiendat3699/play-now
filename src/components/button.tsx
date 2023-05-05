@@ -41,7 +41,7 @@ function Button({ href, children, theme, size, className, onClick, passProp }: B
 
     return (
         <Comp
-            className={`inline-flex rounded font-medium tracking-wide select-none transition-colors duration-200 ${sizeClasses} ${themeClasses} ${className}`}
+            className={`inline-flex justify-center items-center rounded font-medium tracking-wide select-none transition-colors duration-200 ${sizeClasses} ${themeClasses} ${className}`}
             {...props}
         >
             {children}

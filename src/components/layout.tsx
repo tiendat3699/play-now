@@ -44,6 +44,7 @@ function Layout({ children }: PropsWithChildren) {
 
     const navItems: NavItem[] = [
         { title: 'HOME', href: '/' },
+        { title: 'GAMES', href: '/games' },
         { title: 'MY GAMES', href: '/my-games' },
         { title: 'ABOUT', href: '/about' },
         { title: 'CONTACT', href: '/contact' },
