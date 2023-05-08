@@ -5,14 +5,10 @@ import { default as TippyHeadless } from '@tippyjs/react/headless';
 import { HiQuestionMarkCircle } from 'react-icons/hi';
 
 import 'tippy.js/dist/tippy.css';
+import LabelHint, { label } from './labelHint';
 
 interface ColorFieldProps {
-    label:
-        | string
-        | {
-              hint?: string;
-              content?: string;
-          };
+    label: string | label;
 }
 
 function ColorField({ label }: ColorFieldProps) {
@@ -24,26 +20,10 @@ function ColorField({ label }: ColorFieldProps) {
         </div>
     );
 
-    let labelText: string | undefined = '';
-    let hintText: string | undefined = '';
-    if (typeof label == 'string') {
-        labelText = label;
-    } else {
-        labelText = label?.content;
-        hintText = label?.hint;
-    }
-
     return (
         <label className="inline-flex items-center">
             <div className="flex items-center mr-8">
-                <span className="text-sm font-medium">{labelText}</span>
-                {hintText && (
-                    <Tippy placement="top" content={hintText} delay={[300, 0]}>
-                        <span className="ml-1">
-                            <HiQuestionMarkCircle />
-                        </span>
-                    </Tippy>
-                )}
+                <LabelHint label={label} />
             </div>
             <div className="bg-neutral-100 flex items-center px-2 py-1 rounded">
                 <HexColorInput

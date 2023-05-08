@@ -2,7 +2,7 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper';
-import { AutoplayOptions, NavigationOptions, Swiper as SwiperType } from 'swiper/types';
+import { AutoplayOptions, Swiper as SwiperType } from 'swiper/types';
 
 import { MdOutlineKeyboardArrowRight, MdOutlineKeyboardArrowLeft } from 'react-icons/md';
 import CommonItem from './commonItems';

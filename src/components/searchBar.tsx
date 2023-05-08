@@ -6,7 +6,7 @@ function SearchBar() {
     return (
         <div className="flex items-center h-24 sticky top-0 z-50 bg-primary">
             <div className="w-64">
-                <TextField icon={<CgSearch />} style="rounded-full" placeHolder="Search games" />
+                <TextField icon={<CgSearch />} rounded="rounded-full" placeHolder="Search games" />
             </div>
             <ul className="flex text-neutral-100 text-sm tracking-wider items-center mx-4">
                 <li className=" transition-opacity ease-in-out opacity-70 hover:opacity-100">

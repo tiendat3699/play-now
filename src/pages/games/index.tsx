@@ -3,6 +3,7 @@ import DropDown from '~/components/dropdown';
 import Filter from '~/components/filter';
 import Page from '~/components/page';
 import SearchBar from '~/components/searchBar';
+import { category } from '~/configs/category';
 
 function Games() {
     return (
@@ -12,14 +13,7 @@ function Games() {
                 <div className="col-span-12 md:col-span-9">
                     <div className="py-3">
                         <span className="text-neutral-100/[0.7] text-sm">Show: </span>
-                        <DropDown
-                            initValue={{ lable: 'All', value: 'all' }}
-                            options={[
-                                { lable: 'All', value: 'all' },
-                                { lable: 'New Release', value: 'new-release' },
-                                { lable: 'Comming Soon', value: 'comming-soon' },
-                            ]}
-                        />
+                        <DropDown initValue={category[0]} options={category} />
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-12">
                         {(() => {

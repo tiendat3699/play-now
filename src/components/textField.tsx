@@ -1,48 +1,25 @@
-import Tippy from '@tippyjs/react';
 import { ReactNode } from 'react';
-import { HiQuestionMarkCircle } from 'react-icons/hi';
+import LabelHint, { label } from './labelHint';
+
+import 'tippy.js/dist/tippy.css';
 
 interface TextFieldProps {
-    label?:
-        | string
-        | {
-              hint?: string;
-              content: string;
-          };
+    label?: string | label;
     type?: 'email' | 'number' | 'password' | 'tel' | 'text' | 'url';
     placeHolder?: string;
     icon?: ReactNode;
-    style?: 'rounded-full' | 'rounded';
+    rounded?: 'rounded-full' | 'rounded';
+    border?: boolean;
 }
 
-function TextField({ label, type, icon, style, placeHolder }: TextFieldProps) {
-    let labelText: string | undefined = '';
-    let hintText: string | undefined = '';
-    if (typeof label == 'string') {
-        labelText = label;
-    } else {
-        labelText = label?.content;
-        hintText = label?.hint;
-    }
-
+function TextField({ label, type, icon, rounded, placeHolder, border }: TextFieldProps) {
     return (
         <label>
-            {labelText && (
-                <div className="inline-flex items-center mb-1">
-                    <span className="text-sm font-medium">{labelText}</span>
-                    {hintText && (
-                        <Tippy placement="top" content={hintText} delay={[300, 0]}>
-                            <span className="ml-1">
-                                <HiQuestionMarkCircle />
-                            </span>
-                        </Tippy>
-                    )}
-                </div>
-            )}
+            {label && <LabelHint label={label} />}
             <div
-                className={`w-full flex items-center px-3 bg-secondary-2 focus-within:bg-secondary-1 transition-colors duration-75 ${
-                    style || ''
-                }`}
+                className={`w-full flex items-center px-3 bg-secondary-2 focus-within:bg-secondary-1 transition-colors duration-75 border ${
+                    rounded || ''
+                } ${border ? 'border-neutral-400' : 'border-transparent'}`}
             >
                 {icon && <span className="text-sm ml-2 mr-1 text-[#ccc]">{icon}</span>}
                 <input

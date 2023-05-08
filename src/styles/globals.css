@@ -27,3 +27,24 @@ html *::-webkit-scrollbar-track {
     border-radius: 0;
     background-color: transparent;
 }
+
+/* custom react quill */
+.ql-toolbar .ql-formats .ql-picker {
+    color: rgb(212, 212, 212);
+}
+
+.ql-toolbar .ql-formats .ql-picker.ql-expanded .ql-picker-options {
+    color: #2a2a2a;
+}
+
+.ql-toolbar .ql-formats .ql-stroke {
+    stroke: currentColor;
+}
+
+.ql-toolbar .ql-formats .ql-fill {
+    fill: currentColor;
+}
+
+.ql-editor {
+    min-height: 250px;
+}

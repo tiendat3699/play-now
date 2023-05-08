@@ -4,14 +4,7 @@ import { CgSearch, CgCheck } from 'react-icons/cg';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import { option } from './dropdown';
 import TextField from './textField';
-
-const filters: option[] = [
-    { lable: 'Action', value: 'action' },
-    { lable: 'Racing', value: 'racing' },
-    { lable: 'Horror', value: 'horror' },
-    { lable: 'Advanture', value: 'advanture' },
-    { lable: 'Casual', value: 'casual' },
-];
+import { genres } from '~/configs/category';
 
 function Filter() {
     const [seletedFilters, setSeletedFilters] = useState<option[]>();
@@ -41,7 +34,7 @@ function Filter() {
                 </button>
             </div>
             <div className="px-2">
-                <TextField icon={<CgSearch />} style="rounded" placeHolder="Keywords" />
+                <TextField icon={<CgSearch />} rounded="rounded" placeHolder="Keywords" />
             </div>
             <div className="mt-2 px-2 before:block before:bg-secondary-1 before:h-px">
                 <div className="flex flex-col">
@@ -59,17 +52,17 @@ function Filter() {
                     </button>
                     <ul className="mt-2 after:block after:bg-secondary-1 after:h-px">
                         {showFilters &&
-                            filters.map((filter, i) => {
-                                const seleted = seletedFilters?.includes(filter);
+                            genres.map((genre, i) => {
+                                const seleted = seletedFilters?.includes(genre);
                                 return (
                                     <li
                                         key={i}
-                                        onClick={() => handleSelectFilter(filter)}
+                                        onClick={() => handleSelectFilter(genre)}
                                         className={`transition-colors flex items-center px-3 py-3 mb-[5px] text-xs leading-6 rounded hover:text-neutral-100 cursor-pointer ${
                                             seleted ? 'bg-secondary-1 text-neutral-100' : 'text-neutral-100/[0.6]'
                                         }`}
                                     >
-                                        {filter.lable}
+                                        {genre.lable}
                                         <AnimatePresence>
                                             {seleted && (
                                                 <motion.div
