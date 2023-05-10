@@ -13,9 +13,11 @@ interface TextAreaProps {
           };
     placeHolder?: string;
     border?: boolean;
+    value?: string;
+    onChange?: (value: string) => any;
 }
 
-function TextArea({ row, label, placeHolder, border }: TextAreaProps) {
+function TextArea({ row, label, placeHolder, border, value, onChange }: TextAreaProps) {
     let labelText: string | undefined = '';
     let hintText: string | undefined = '';
     if (typeof label == 'string') {
@@ -44,6 +46,8 @@ function TextArea({ row, label, placeHolder, border }: TextAreaProps) {
                 }`}
             >
                 <textarea
+                    value={value}
+                    onChange={(e) => onChange?.(e.target.value)}
                     rows={row}
                     placeholder={placeHolder}
                     className="w-full block flex-1 border-0 outline-none bg-transparent py-2 px-2 text-white placeholder:text-neutral-400 text-sm sm:leading-6 rounded"

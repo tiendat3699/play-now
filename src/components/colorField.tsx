@@ -1,18 +1,21 @@
-import { ReactNode, useState } from 'react';
-import Tippy from '@tippyjs/react';
+import { ReactNode, useEffect, useState } from 'react';
 import { HexColorInput, HexAlphaColorPicker } from 'react-colorful';
 import { default as TippyHeadless } from '@tippyjs/react/headless';
-import { HiQuestionMarkCircle } from 'react-icons/hi';
 
 import 'tippy.js/dist/tippy.css';
 import LabelHint, { label } from './labelHint';
 
 interface ColorFieldProps {
     label: string | label;
+    onChange?: (hexColor: string) => any;
 }
 
-function ColorField({ label }: ColorFieldProps) {
+function ColorField({ label, onChange }: ColorFieldProps) {
     const [color, setColor] = useState<string>('#000000');
+
+    useEffect(() => {
+        onChange?.(color);
+    }, [color, onChange]);
 
     const renderPickColor = (props: any): ReactNode => (
         <div tabIndex={-1} {...props}>

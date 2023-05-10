@@ -15,6 +15,11 @@ import LabelHint from '~/components/labelHint';
 
 function Upload() {
     const [comminsoon, setComminsoon] = useState<boolean>(false);
+    const [title, setTitle] = useState<string>();
+    const [shortDescription, setShortDescription] = useState<string>();
+    const [titleColor, setTitleColor] = useState<string>();
+    const [coverImage, setCoverImage] = useState<File>();
+    const [screenShots, setScreenShots] = useState<File[]>([]);
 
     return (
         <Page title="Upload your game">
@@ -28,7 +33,14 @@ function Upload() {
                 <div className="grid grid-cols-5 pt-8 gap-6 px-2 sm:px-8">
                     <div className="lg:col-span-3 col-span-5 lg:order-1 order-2">
                         <div className="mb-3">
-                            <TextField label={'Title'} rounded="rounded" placeHolder="Name your game" border />
+                            <TextField
+                                value={title}
+                                onChange={setTitle}
+                                label={'Title'}
+                                rounded="rounded"
+                                placeHolder="Name your game"
+                                border
+                            />
                         </div>
                         <div className="mb-3 flex sm:items-center justify-between flex-col sm:flex-row">
                             <div className="py-3">
@@ -36,11 +48,14 @@ function Upload() {
                                 <DropDown initValue={genres[0]} options={genres} />
                             </div>
                             <ColorField
+                                onChange={setTitleColor}
                                 label={{ text: 'Color Title', hint: 'Choose your color title for banner title' }}
                             />
                         </div>
                         <div className="mb-3">
                             <TextArea
+                                value={shortDescription}
+                                onChange={setShortDescription}
                                 row={3}
                                 label={{
                                     content: 'Short description',
@@ -111,6 +126,7 @@ function Upload() {
                     <div className="lg:col-span-2 col-span-5 lg:order-2 order-1">
                         <div className="lg:h-80 md:h-72 h-44 mb-4">
                             <ImageUpload
+                                onChange={setCoverImage}
                                 lable={{
                                     text: 'Cover image',
                                     hint: 'The cover image is used whenever playnow.io wants to link to your project from another part of the site',

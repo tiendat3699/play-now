@@ -10,20 +10,23 @@ type image = {
 
 interface ImageUploadProps {
     lable?: string | label;
-    multiple?: boolean;
+    onChange?: (image: File) => any;
 }
 
-function ImageUpload({ lable }: ImageUploadProps) {
+function ImageUpload({ lable, onChange }: ImageUploadProps) {
     const inputFileRef = useRef<HTMLInputElement>(null);
     const [image, setImage] = useState<image | null>();
 
     useEffect(() => {
+        if (image) {
+            onChange?.(image.file);
+        }
         return () => {
             if (image?.preview) {
                 URL.revokeObjectURL(image.preview);
             }
         };
-    }, [image]);
+    }, [image, onChange]);
 
     const handleUpload = (e: ChangeEvent<HTMLInputElement>): void => {
         if (e.target.files) {
