@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { usePathname } from 'next/navigation';
 
 import { ReactNode } from 'react';
 
@@ -10,11 +10,11 @@ interface NavLinkProps {
 }
 
 function NavLink({ href, children, className }: NavLinkProps) {
-    const router = useRouter();
+    const pathname = usePathname();
 
     const getClasses = (): string | undefined => {
         if (typeof className === 'string') return className;
-        else return className ? className(router.pathname === href) : undefined;
+        else return className ? className(pathname == href) : undefined;
     };
 
     return (
