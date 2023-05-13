@@ -1,2 +1,2 @@
-export type { GameData } from './gameService';
-export { default } from './gameService';
+export type { gameData } from './gameService';
+export { default as gameService } from './gameService';

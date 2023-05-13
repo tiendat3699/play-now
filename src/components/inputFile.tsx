@@ -1,12 +1,20 @@
+import { ChangeEvent } from 'react';
 import LabelHint, { label } from './labelHint';
 
 interface InputFileProps {
     label?: label | string;
     accept?: string;
     multiple?: boolean;
+    onChange?: (file: FileList) => any;
 }
 
-function InputFile({ label, accept, multiple }: InputFileProps) {
+function InputFile({ label, accept, multiple, onChange }: InputFileProps) {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files.length > 0) {
+            onChange?.(e.target.files);
+        }
+    };
+
     return (
         <div className="mb-1">
             {label && <LabelHint textSize="xs" label={label} />}
@@ -15,6 +23,7 @@ function InputFile({ label, accept, multiple }: InputFileProps) {
                 type="file"
                 accept={accept}
                 multiple={multiple}
+                onChange={handleChange}
             />
         </div>
     );

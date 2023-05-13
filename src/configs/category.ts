@@ -4,7 +4,7 @@ export const category = [
     { lable: 'Comming Soon', value: 'comming-soon' },
 ];
 
-export const genres = [
+export const typesGame = [
     { lable: 'Action', value: 'action' },
     { lable: 'Racing', value: 'racing' },
     { lable: 'Horror', value: 'horror' },

@@ -5,20 +5,22 @@ import { motion } from 'framer-motion';
 
 export type option = {
     lable: string;
-    value: string | number;
+    value: string;
 };
 
 interface DropDownProps {
     options: option[];
     placeHolder?: string;
     initValue?: option;
+    onChange?: (value: string) => any;
 }
 
-function DropDown({ options, placeHolder, initValue }: DropDownProps) {
+function DropDown({ options, placeHolder, initValue, onChange }: DropDownProps) {
     const [selectedOption, setSelectedOption] = useState<option | undefined>(initValue);
     const [showOptions, setShowOptions] = useState<boolean>(false);
 
     const handleSelect = (option: option) => {
+        onChange?.(option.value);
         setSelectedOption(option);
         setShowOptions(false);
     };

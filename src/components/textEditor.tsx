@@ -40,9 +40,11 @@ const ReactQuill = dynamic(
 
 interface TextEditorProps {
     label?: string | label;
+    value?: string;
+    onChange?: (value: string) => any;
 }
 
-function TextEditor({ label }: TextEditorProps) {
+function TextEditor({ label, value, onChange }: TextEditorProps) {
     const editorRef = useRef<any>();
 
     const Undo = () => {
@@ -77,7 +79,12 @@ function TextEditor({ label }: TextEditorProps) {
     return (
         <>
             {label && <LabelHint label={label} />}
-            <ReactQuill forwardedRef={editorRef} modules={{ ...modules }} />
+            <ReactQuill
+                value={value}
+                onChange={(value) => onChange?.(value)}
+                forwardedRef={editorRef}
+                modules={{ ...modules }}
+            />
         </>
     );
 }

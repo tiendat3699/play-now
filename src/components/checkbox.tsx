@@ -1,23 +1,17 @@
-import { useEffect, useState } from 'react';
+import { ChangeEvent } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 import { RxCheck } from 'react-icons/rx';
 
 interface CheckboxProps {
     label?: string;
-    defaulValue?: boolean;
-    onCheck?: (checked: boolean) => void;
+    checked?: boolean;
+    onChange?: (checked: boolean) => any;
 }
 
-function Checkbox({ defaulValue, label, onCheck }: CheckboxProps) {
-    const [checked, setChecked] = useState<boolean>(defaulValue ? defaulValue : false);
-
-    useEffect(() => {
-        !!onCheck && onCheck(checked);
-    }, [checked, onCheck]);
-
-    const handelChange = (): void => {
-        setChecked(!checked);
+function Checkbox({ checked, label, onChange }: CheckboxProps) {
+    const handelChange = (e: ChangeEvent<HTMLInputElement>): void => {
+        onChange?.(e.target.checked);
     };
 
     return (

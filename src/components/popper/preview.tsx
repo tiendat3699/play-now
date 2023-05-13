@@ -1,9 +1,10 @@
-import { ReactElement, ReactNode } from 'react';
+import { ReactElement, ReactNode, useState } from 'react';
 import Image from 'next/image';
 import Tippy from '@tippyjs/react/headless';
 import PopperWapper from './popperWapper';
 import { useSpring, motion } from 'framer-motion';
 import Button from '~/components/button';
+import { useRouter } from 'next/router';
 
 interface PreviewProp {
     children: ReactElement;
@@ -17,6 +18,15 @@ interface PreviewProp {
 function Preview({ children, title, href, description, screenShots, visible }: PreviewProp) {
     const y = useSpring(50, { stiffness: 200, damping: 20 });
     const opacity = useSpring(0);
+    const [play, setPlay] = useState<boolean>(false);
+    const [visiblePreView, setVisiblePreView] = useState<boolean | undefined>(visible);
+
+    const router = useRouter();
+
+    const handleClickPlayBtn = () => {
+        setPlay(true);
+        setVisiblePreView(false);
+    };
 
     const renderPreview = (prop: any): ReactNode => (
         <div tabIndex={-1} className="group" {...prop}>
@@ -42,7 +52,7 @@ function Preview({ children, title, href, description, screenShots, visible }: P
                             ))}
                         </div>
                     )}
-                    <Button href={href} className=" rounded-none" size="sm">
+                    <Button onClick={handleClickPlayBtn} className=" rounded-none" size="sm">
                         PLAY
                     </Button>
                 </PopperWapper>
@@ -57,7 +67,7 @@ function Preview({ children, title, href, description, screenShots, visible }: P
     return (
         <Tippy
             interactive
-            visible={visible}
+            visible={visiblePreView}
             placement="left"
             animation
             onMount={() => {
@@ -73,6 +83,11 @@ function Preview({ children, title, href, description, screenShots, visible }: P
                 });
                 y.set(50);
                 opacity.set(0);
+            }}
+            onHidden={() => {
+                if (play) {
+                    router.push(href);
+                }
             }}
             render={renderPreview}
             delay={[600, 100]}

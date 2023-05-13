@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Button from './button';
 import Preview from './popper/preview';
 
-interface CommonItemProps {
+export interface CommonItemProps {
     thumb: string;
     title: string;
     link: string;
@@ -22,9 +22,9 @@ function CommonItem({ thumb, title, link, poster, description, screenShots, prev
                     <Image
                         src={thumb}
                         alt={title}
-                        width={0}
-                        height={0}
-                        className="h-full w-full object-cover object-center rounded"
+                        fill
+                        sizes="100%"
+                        className="object-cover object-center rounded"
                         priority
                     />
                     <div className=" transition-all absolute z-10 flex top-0 right-0 bottom-0 left-0 bg-black/[0.6] opacity-0 group-hover:opacity-100 ">

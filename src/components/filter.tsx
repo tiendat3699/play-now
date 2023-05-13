@@ -4,7 +4,7 @@ import { CgSearch, CgCheck } from 'react-icons/cg';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import { option } from './dropdown';
 import TextField from './textField';
-import { genres } from '~/configs/category';
+import { typesGame } from '~/configs/category';
 
 function Filter() {
     const [seletedFilters, setSeletedFilters] = useState<option[]>();
@@ -52,17 +52,17 @@ function Filter() {
                     </button>
                     <ul className="mt-2 after:block after:bg-secondary-1 after:h-px">
                         {showFilters &&
-                            genres.map((genre, i) => {
-                                const seleted = seletedFilters?.includes(genre);
+                            typesGame.map((type, i) => {
+                                const seleted = seletedFilters?.includes(type);
                                 return (
                                     <li
                                         key={i}
-                                        onClick={() => handleSelectFilter(genre)}
+                                        onClick={() => handleSelectFilter(type)}
                                         className={`transition-colors flex items-center px-3 py-3 mb-[5px] text-xs leading-6 rounded hover:text-neutral-100 cursor-pointer ${
                                             seleted ? 'bg-secondary-1 text-neutral-100' : 'text-neutral-100/[0.6]'
                                         }`}
                                     >
-                                        {genre.lable}
+                                        {type.lable}
                                         <AnimatePresence>
                                             {seleted && (
                                                 <motion.div

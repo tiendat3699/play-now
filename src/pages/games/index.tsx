@@ -1,11 +1,35 @@
-import CommonItem from '~/components/commonItems';
+import { collection, getDocs } from 'firebase/firestore';
+import { useEffect, useState } from 'react';
+import CommonItem, { CommonItemProps } from '~/components/commonItems';
 import DropDown from '~/components/dropdown';
 import Filter from '~/components/filter';
 import Page from '~/components/page';
 import SearchBar from '~/components/searchBar';
 import { category } from '~/configs/category';
+import { db } from '~/firebase';
 
 function Games() {
+    const [games, setGames] = useState<CommonItemProps[]>();
+    useEffect(() => {
+        const getGames = async () => {
+            const gamesCollectionRef = collection(db, 'games');
+            const res = await getDocs(gamesCollectionRef);
+            const gamesList: CommonItemProps[] = res.docs.map((doc) => {
+                const data = doc.data();
+                return {
+                    link: `games/${doc.id}`,
+                    title: data.title,
+                    thumb: data.coverImageUrl,
+                    poster: 'tiendat',
+                    description: data.shortDescription,
+                };
+            });
+
+            setGames(gamesList);
+        };
+        getGames();
+    }, []);
+
     return (
         <Page title="Free indie games">
             <SearchBar />
@@ -16,23 +40,16 @@ function Games() {
                         <DropDown initValue={category[0]} options={category} />
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-12">
-                        {(() => {
-                            const renders = [];
-                            for (let i = 0; i < 20; i++) {
-                                renders.push(
-                                    <CommonItem
-                                        key={i}
-                                        title="Red Fall"
-                                        thumb="/game1.avif"
-                                        link="/"
-                                        poster="tiendat"
-                                        description="Rule a fantasy realm of your own design! Explore new magical realms in Age of Wonders’ signature blend of 4X strategy and turn-based tactical combat. Control a faction that grows and changes as you expand your empire with each turn!"
-                                        screenShots={['/game1.avif', '/banner.avif']}
-                                    />,
-                                );
-                            }
-                            return renders;
-                        })()}
+                        {games?.map((game) => (
+                            <CommonItem
+                                key={game.link}
+                                title={game.title}
+                                thumb={game.thumb}
+                                poster=""
+                                link={game.link}
+                                description={game.description}
+                            />
+                        ))}
                     </div>
                 </div>
                 <div className="col-span-12 md:col-span-3">
