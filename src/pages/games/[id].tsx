@@ -9,6 +9,8 @@ import { BiFullscreen } from 'react-icons/bi';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
 import { db } from '~/firebase';
 import TextEditorReadOnly from '~/components/textEditorReadOnly';
+import { releaseStatus } from '~/services/gameService';
+import { IoLogoGameControllerA } from 'react-icons/io';
 
 const Unity = dynamic(
     async () => {
@@ -28,9 +30,19 @@ interface GameDetailProps {
     dataUrl: string;
     frameworkUrl: string;
     codeUrl: string;
+    status?: releaseStatus;
 }
 
-function GameDetail({ title, description, coverImage, loaderUrl, dataUrl, frameworkUrl, codeUrl }: GameDetailProps) {
+function GameDetail({
+    title,
+    description,
+    coverImage,
+    loaderUrl,
+    dataUrl,
+    frameworkUrl,
+    codeUrl,
+    status,
+}: GameDetailProps) {
     const {
         unityProvider,
         loadingProgression,
@@ -73,25 +85,34 @@ function GameDetail({ title, description, coverImage, loaderUrl, dataUrl, framew
                             />
                             {!isLoaded && (
                                 <div className="absolute w-full h-full top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex bg-black/[0.7]">
-                                    <div className="w-1/4 rounded-full h-4 bg-gray-700 m-auto">
-                                        <div
-                                            className="bg-white h-full rounded-full"
-                                            style={{ width: Math.round((loadingProgression / 0.9) * 100) + '%' }}
-                                        ></div>
-                                    </div>
+                                    {status == 'comming' ? (
+                                        <div className="m-auto text-4xl font-bold flex flex-col items-center">
+                                            <IoLogoGameControllerA className="text-6xl" />
+                                            <p>Comming soon</p>
+                                        </div>
+                                    ) : (
+                                        <div className="w-1/4 rounded-full h-4 bg-gray-700 m-auto">
+                                            <div
+                                                className="bg-white h-full rounded-full"
+                                                style={{ width: Math.round((loadingProgression / 0.9) * 100) + '%' }}
+                                            ></div>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
-                        <div className="bg-secondary-1 flex items-center justify-end">
-                            <Tippy content="Fullscreen">
-                                <button
-                                    onClick={() => requestFullscreen(true)}
-                                    className="p-2 hover:opacity-60 text-xl"
-                                >
-                                    <BiFullscreen />
-                                </button>
-                            </Tippy>
-                        </div>
+                        {status == 'release' && (
+                            <div className="bg-secondary-1 flex items-center justify-end">
+                                <Tippy content="Fullscreen">
+                                    <button
+                                        onClick={() => requestFullscreen(true)}
+                                        className="p-2 hover:opacity-60 text-xl"
+                                    >
+                                        <BiFullscreen />
+                                    </button>
+                                </Tippy>
+                            </div>
+                        )}
                     </div>
                     <div className="mt-4">
                         <TextEditorReadOnly value={description} />
@@ -126,10 +147,11 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
                 title: data.title,
                 description: data.description,
                 coverImage: data.coverImageUrl,
-                loaderUrl: data.loaderUrl,
-                dataUrl: data.dataUrl,
-                frameworkUrl: data.frameworkUrl,
-                codeUrl: data.codeUrl,
+                loaderUrl: data.loaderUrl ? data.loadUrl : null,
+                dataUrl: data.dataUrl ? data.dataUrl : null,
+                frameworkUrl: data.frameworkUrl ? data.frameworkUrl : null,
+                codeUrl: data.codeUrl ? data.codeUrl : null,
+                status: data.status,
             };
 
             return {

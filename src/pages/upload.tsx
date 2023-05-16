@@ -18,6 +18,8 @@ import { releaseStatus } from '~/services/gameService';
 import { useRouter } from 'next/router';
 import { BiCheckCircle, BiError } from 'react-icons/bi';
 import { AiOutlineLoading3Quarters } from 'react-icons/ai';
+import { useAuthState } from 'react-firebase-hooks/auth';
+import { auth } from '~/firebase';
 
 const Modal = dynamic(() => import('~/components/modal'), { ssr: false });
 
@@ -33,6 +35,7 @@ function Upload() {
     const [dataFile, setDataFile] = useState<File>();
     const [frameworkFile, setFrameworkFile] = useState<File>();
     const [codeFile, setCodeFile] = useState<File>();
+    const [user] = useAuthState(auth);
 
     const [errors, setErrors] = useState<string[]>([]);
     const [loading, setLoading] = useState<'loading' | 'success' | 'fail' | null>();
@@ -46,6 +49,7 @@ function Upload() {
             titleColor,
             description,
             shortDescription,
+            poster: user?.uid,
             type,
             status: comminsoon ? releaseStatus.comming : releaseStatus.release,
             coverImage,
@@ -106,7 +110,7 @@ function Upload() {
     };
 
     return (
-        <Page title="Upload your game">
+        <Page requrieAuth title="Upload your game">
             <div className="mt-6 overflow-hidden border rounded-md pb-4">
                 <div className="bg-secondary-1 px-8 py-6">
                     <h1 className="text-lg font-medium mb-2 tracking-wide">Upload your game</h1>

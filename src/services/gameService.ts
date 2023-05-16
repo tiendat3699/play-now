@@ -14,6 +14,7 @@ export type gameData = {
     titleColor: string;
     shortDescription?: string;
     description: string;
+    poster?: string;
     type: string;
     status: releaseStatus;
     coverImage?: File;
@@ -29,6 +30,7 @@ type uploadData = {
     description: string;
     type: string;
     status: releaseStatus;
+    poster?: string;
     shortDescription?: string;
     coverImage?: string;
     coverImageUrl?: string;
@@ -53,6 +55,7 @@ const gameService = {
                 type: gameData.type,
                 status: gameData.status,
                 shortDescription: gameData.shortDescription,
+                poster: gameData.poster,
             };
 
             if (gameData.coverImage) {
