@@ -49,7 +49,7 @@ function Upload() {
             titleColor,
             description,
             shortDescription,
-            poster: user?.uid,
+            poster: user?.displayName || 'Unname',
             type,
             status: comminsoon ? releaseStatus.comming : releaseStatus.release,
             coverImage,

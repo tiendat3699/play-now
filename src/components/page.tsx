@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import { ReactNode, useLayoutEffect, useState } from 'react';
+import React, { ReactNode, useEffect, useState } from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { auth } from '~/firebase';
 import { GoSignIn } from 'react-icons/go';
@@ -15,7 +15,8 @@ function Page({ title, children, requrieAuth }: PageProps) {
     const titleDoc = title + ' - playnow.io';
     const [user, loading] = useAuthState(auth);
     const [authentiacted, setAuthentiacted] = useState<boolean>(!requrieAuth || !!user);
-    useLayoutEffect(() => {
+
+    useEffect(() => {
         if (requrieAuth) {
             if (!loading) {
                 setAuthentiacted(!!user);

@@ -6,7 +6,22 @@ import Carousel from '~/components/carousel';
 import Button from '~/components/button';
 import SearchBar from '~/components/searchBar';
 
+import { useCollection } from 'react-firebase-hooks/firestore';
+import { collection, limit, orderBy, query, where } from 'firebase/firestore';
+import { db } from '~/firebase';
+import queryToSlide from '~/utils/queryToSlide';
+
 export default function Home() {
+    const [popularGames, loadingPopular] = useCollection(
+        query(collection(db, 'games'), orderBy('timestamp', 'desc'), limit(6)),
+    );
+    const [newGames, newGameLoading] = useCollection(
+        query(collection(db, 'games'), where('status', '==', 'release'), orderBy('timestamp', 'desc'), limit(10)),
+    );
+    const [upcommingGames, upcommingGameLoading] = useCollection(
+        query(collection(db, 'games'), where('status', '==', 'comming'), limit(10)),
+    );
+
     return (
         <Page title="Free indie games | Play & upload your game">
             <SearchBar />
@@ -14,64 +29,23 @@ export default function Home() {
                 maxHeight={500}
                 allowTouchMove={false}
                 autoplay={{ delay: 8000, disableOnInteraction: false }}
-                slides={[
-                    {
-                        banner: '/game1.avif',
-                        thumb: '/thumbgame1.avif',
-                        title: 'Red Fall',
-                        colorTitle: '#FF351F',
-                        subTitle: 'Now Avaiable',
-                        description:
-                            'Rule a fantasy realm of your own design! Explore new magical realms in Age of Wonders’ signature blend of 4X strategy and turn-based tactical combat. Control a faction that grows and changes as you expand your empire with each turn!',
-                    },
-                    {
-                        banner: '/game1.avif',
-                        thumb: '/thumbgame1.avif',
-                        title: 'Red Fall',
-                        colorTitle: '#00bae7',
-                        subTitle: 'Now Avaiable',
-                        description:
-                            'Rule a fantasy realm of your own design! Explore new magical realms in Age of Wonders’ signature blend of 4X strategy and turn-based tactical combat. Control a faction that grows and changes as you expand your empire with each turn!',
-                    },
-                    {
-                        banner: '/game1.avif',
-                        thumb: '/thumbgame1.avif',
-                        title: 'Red Fall',
-                        subTitle: 'Now Avaiable',
-                        description:
-                            'Rule a fantasy realm of your own design! Explore new magical realms in Age of Wonders’ signature blend of 4X strategy and turn-based tactical combat. Control a faction that grows and changes as you expand your empire with each turn!',
-                    },
-                    {
-                        banner: '/game1.avif',
-                        thumb: '/thumbgame1.avif',
-                        title: 'Red Fall',
-                        subTitle: 'Now Avaiable',
-                        description:
-                            'Rule a fantasy realm of your own design! Explore new magical realms in Age of Wonders’ signature blend of 4X strategy and turn-based tactical combat. Control a faction that grows and changes as you expand your empire with each turn!',
-                    },
-                    {
-                        banner: '/game1.avif',
-                        thumb: '/thumbgame1.avif',
-                        title: 'Red Fall',
-                        subTitle: 'Now Avaiable',
-                        description:
-                            'Rule a fantasy realm of your own design! Explore new magical realms in Age of Wonders’ signature blend of 4X strategy and turn-based tactical combat. Control a faction that grows and changes as you expand your empire with each turn!',
-                    },
-                    {
-                        banner: '/game1.avif',
-                        thumb: '/thumbgame1.avif',
-                        title: 'Red Fall',
-                        subTitle: 'Now Avaiable',
-                        description:
-                            'Rule a fantasy realm of your own design! Explore new magical realms in Age of Wonders’ signature blend of 4X strategy and turn-based tactical combat. Control a faction that grows and changes as you expand your empire with each turn!',
-                    },
-                ]}
+                slides={queryToSlide(popularGames, 'games')}
+                loading={loadingPopular}
             />
-            <Carousel title="Top Games" link="/games" slidesGroup />
-            <Carousel title="New Games" link="/games" slidesGroup />
-            <Carousel title="Coming Soon" link="/games" slidesGroup />
-            <Carousel title="Action games" link="/games" slidesGroup />
-            <Carousel title="Racing games" link="/games" slidesGroup />
+            <Carousel
+                title="New Games"
+                link="/games"
+                slidesGroup
+                slides={queryToSlide(newGames, 'games')}
+                loading={newGameLoading}
+            />
+            <Carousel
+                title="Coming Soon"
+                link="/games"
+                slidesGroup
+                slides={queryToSlide(upcommingGames, 'games')}
+                loading={upcommingGameLoading}
+            />
             <div className="grid md:grid-cols-5 gap-7 mt-20">
                 <Link
                     href={'/games'}
@@ -83,6 +57,9 @@ export default function Home() {
                         width={0}
                         height={0}
                         className="w-full h-full object-cover object-center"
+                        placeholder="empty"
+                        blurDataURL="/placeholder.jpg"
+                        priority
                     />
                 </Link>
                 <div className="col-span-2 my-auto">

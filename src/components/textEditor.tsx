@@ -14,6 +14,7 @@ interface CustomReactQuillProps extends ReactQuillProps {
 import 'react-quill/dist/quill.snow.css';
 import 'tippy.js/dist/tippy.css';
 import LabelHint, { label } from './labelHint';
+import SkeletonElement from './skeletonElement';
 
 //fix document is not defined, ReactQuill cant render in rendering server side because DOM is not available
 const ReactQuill = dynamic(
@@ -34,7 +35,7 @@ const ReactQuill = dynamic(
     },
     {
         ssr: false,
-        loading: () => <div className="h-80 rounded animate-pulse bg-secondary-1" />,
+        loading: () => <SkeletonElement height={320} />,
     },
 );
 

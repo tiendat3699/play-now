@@ -83,6 +83,8 @@ function ImageUpload({ lable, onChange }: ImageUploadProps) {
                             width={100}
                             height={100}
                             className="w-full h-full object-cover object-center absolute top-0 right-0 bottom-0 left-0"
+                            placeholder="empty"
+                            blurDataURL="/placeholder.jpg"
                         />
                         <div className="absolute top-0 right-0 bottom-0 left-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity" />
                     </>

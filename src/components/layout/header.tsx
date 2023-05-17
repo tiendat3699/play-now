@@ -32,8 +32,12 @@ function Header() {
 
     const signIn = async () => {
         if (!loading) {
-            const provider = new GoogleAuthProvider();
-            await signInWithPopup(auth, provider);
+            try {
+                const provider = new GoogleAuthProvider();
+                await signInWithPopup(auth, provider);
+            } catch (error) {
+                console.log(error);
+            }
         }
     };
 
@@ -72,7 +76,8 @@ function Header() {
                         width={100}
                         height={100}
                         className="w-7 h-auto m-auto"
-                        priority
+                        placeholder="empty"
+                        blurDataURL="/placeholder.jpg"
                     />
                 </Link>
                 <ul className="flex text-[#ccc] text-2xs tracking-wider items-center">
@@ -108,7 +113,14 @@ function Header() {
                                 <p className="text-xs text-neutral-100">{user.displayName}</p>
                                 {user.photoURL && (
                                     <div className="relative rounded-full overflow-hidden w-8 h-8 ml-2 ring-1 ring-primary">
-                                        <Image src={user.photoURL} alt="avatar" fill sizes="100%" />
+                                        <Image
+                                            src={user.photoURL}
+                                            alt="avatar"
+                                            fill
+                                            sizes="100%"
+                                            placeholder="empty"
+                                            blurDataURL="/placeholder.jpg"
+                                        />
                                     </div>
                                 )}
                             </div>

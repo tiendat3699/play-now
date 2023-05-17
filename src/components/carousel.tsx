@@ -10,6 +10,7 @@ import CommonItem from './commonItems';
 // Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
+import { Slide } from './bannerCarousel';
 
 interface CarouselProps {
     title?: string;
@@ -19,9 +20,21 @@ interface CarouselProps {
     allowTouchMove?: boolean;
     loop?: boolean;
     slidesGroup?: boolean;
+    slides: Slide[];
+    loading?: boolean;
 }
 
-function Carousel({ title, link, autoplay, maxHeight, allowTouchMove, loop, slidesGroup }: CarouselProps) {
+function Carousel({
+    title,
+    link,
+    autoplay,
+    maxHeight,
+    allowTouchMove,
+    loop,
+    slidesGroup,
+    slides,
+    loading,
+}: CarouselProps) {
     const prevRef = useRef<HTMLButtonElement>(null);
     const nextRef = useRef<HTMLButtonElement>(null);
 
@@ -80,23 +93,28 @@ function Carousel({ title, link, autoplay, maxHeight, allowTouchMove, loop, slid
                         },
                     }}
                 >
-                    {(() => {
-                        const render = [];
-                        for (let i = 0; i < 10; i++) {
-                            render.push(
-                                <SwiperSlide key={i}>
-                                    <CommonItem
-                                        thumb="/game1.avif"
-                                        title="Red Fall"
-                                        link="/"
-                                        poster="tiendat"
-                                        preview={false}
-                                    />
-                                </SwiperSlide>,
-                            );
-                        }
-                        return render;
-                    })()}
+                    {loading
+                        ? (() => {
+                              const render = [];
+                              for (let i = 0; i < 5; i++) {
+                                  render.push(
+                                      <SwiperSlide key={i}>
+                                          <CommonItem thumb="" title="" link="" preview={false} loading />
+                                      </SwiperSlide>,
+                                  );
+                              }
+                              return render;
+                          })()
+                        : slides.map((slide, i) => (
+                              <SwiperSlide key={slide.id || i}>
+                                  <CommonItem
+                                      thumb={slide.banner}
+                                      title={slide.title}
+                                      link={slide.link}
+                                      preview={false}
+                                  />
+                              </SwiperSlide>
+                          ))}
                 </Swiper>
             </div>
         </div>

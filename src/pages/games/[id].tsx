@@ -147,7 +147,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
                 title: data.title,
                 description: data.description,
                 coverImage: data.coverImageUrl,
-                loaderUrl: data.loaderUrl ? data.loadUrl : null,
+                loaderUrl: data.loaderUrl ? data.loaderUrl : null,
                 dataUrl: data.dataUrl ? data.dataUrl : null,
                 frameworkUrl: data.frameworkUrl ? data.frameworkUrl : null,
                 codeUrl: data.codeUrl ? data.codeUrl : null,
