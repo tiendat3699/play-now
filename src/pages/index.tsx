@@ -6,19 +6,19 @@ import Carousel from '~/components/carousel';
 import Button from '~/components/button';
 import SearchBar from '~/components/searchBar';
 
-import { useCollection } from 'react-firebase-hooks/firestore';
+import { useCollectionOnce } from 'react-firebase-hooks/firestore';
 import { collection, limit, orderBy, query, where } from 'firebase/firestore';
 import { db } from '~/firebase';
 import queryToSlide from '~/utils/queryToSlide';
 
 export default function Home() {
-    const [popularGames, loadingPopular] = useCollection(
+    const [popularGames, loadingPopular] = useCollectionOnce(
         query(collection(db, 'games'), orderBy('timestamp', 'desc'), limit(6)),
     );
-    const [newGames, newGameLoading] = useCollection(
+    const [newGames, newGameLoading] = useCollectionOnce(
         query(collection(db, 'games'), where('status', '==', 'release'), orderBy('timestamp', 'desc'), limit(10)),
     );
-    const [upcommingGames, upcommingGameLoading] = useCollection(
+    const [upcommingGames, upcommingGameLoading] = useCollectionOnce(
         query(collection(db, 'games'), where('status', '==', 'comming'), limit(10)),
     );
 
@@ -34,14 +34,14 @@ export default function Home() {
             />
             <Carousel
                 title="New Games"
-                link="/games"
+                link="/games/?show=release"
                 slidesGroup
                 slides={queryToSlide(newGames, 'games')}
                 loading={newGameLoading}
             />
             <Carousel
                 title="Coming Soon"
-                link="/games"
+                link="/games/?show=comming"
                 slidesGroup
                 slides={queryToSlide(upcommingGames, 'games')}
                 loading={upcommingGameLoading}

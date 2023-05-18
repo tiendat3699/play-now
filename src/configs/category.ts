@@ -1,7 +1,7 @@
 export const category = [
     { lable: 'All', value: 'all' },
-    { lable: 'New Release', value: 'new-release' },
-    { lable: 'Comming Soon', value: 'comming-soon' },
+    { lable: 'Release', value: 'release' },
+    { lable: 'Comming Soon', value: 'comming' },
 ];
 
 export const typesGame = [

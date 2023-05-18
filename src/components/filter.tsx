@@ -6,8 +6,12 @@ import { option } from './dropdown';
 import TextField from './textField';
 import { typesGame } from '~/configs/category';
 
-function Filter() {
-    const [seletedFilters, setSeletedFilters] = useState<option[]>();
+interface FilterProps {
+    onChange?: (options: option[]) => any;
+}
+
+function Filter({ onChange }: FilterProps) {
+    const [seletedFilters, setSeletedFilters] = useState<option[]>([]);
     const [showFilters, setShowFilters] = useState<boolean>(false);
 
     const handleSelectFilter = (filter: option) => {
@@ -20,8 +24,7 @@ function Filter() {
             }
 
             setSeletedFilters([...seletedFilters]);
-        } else {
-            setSeletedFilters([filter]);
+            onChange?.([...seletedFilters]);
         }
     };
 
@@ -29,7 +32,13 @@ function Filter() {
         <div>
             <div className="flex justify-between items-center mb-2 px-2">
                 <span className="text-sm py-3">Filters ({seletedFilters ? seletedFilters?.length : 0})</span>
-                <button className="text-[11px] py-3 hover:text-neutral-100/[0.7]" onClick={() => setSeletedFilters([])}>
+                <button
+                    className="text-[11px] py-3 hover:text-neutral-100/[0.7]"
+                    onClick={() => {
+                        setSeletedFilters([]);
+                        onChange?.([]);
+                    }}
+                >
                     RESET
                 </button>
             </div>
@@ -42,7 +51,7 @@ function Filter() {
                         onClick={() => setShowFilters(!showFilters)}
                         className="transition-colors flex items-center text-neutral-100/[0.6] text-xs mt-2 flex-1 px-2 py-3 -mx-2 text-left relative border border-transparent focus:border-current hover:text-neutral-100 rounded "
                     >
-                        GENRE
+                        TYPE
                         <motion.div
                             animate={{ rotateZ: showFilters ? -180 : 0 }}
                             className="ml-auto text-3xl relative left-1"
