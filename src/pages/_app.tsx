@@ -9,10 +9,10 @@ const inter = Inter({ subsets: ['vietnamese', 'latin'] });
 
 export default function App({ Component, pageProps }: AppProps) {
     return (
-        <Layout>
-            <div className={'text-neutral-100 ' + inter.className}>
+        <div className={'text-neutral-100 ' + inter.className}>
+            <Layout>
                 <Component {...pageProps} />
-            </div>
-        </Layout>
+            </Layout>
+        </div>
     );
 }

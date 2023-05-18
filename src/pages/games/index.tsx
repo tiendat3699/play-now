@@ -10,47 +10,59 @@ import {
 } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useState } from 'react';
-import { useCollectionOnce } from 'react-firebase-hooks/firestore';
 import CommonItem from '~/components/commonItems';
-import DropDown, { option } from '~/components/dropdown';
+import DropDown from '~/components/dropdown';
+import { getCategory, getTypeGame, option } from '~/configs/category';
 import Filter from '~/components/filter';
 import Page from '~/components/page';
 import SearchBar from '~/components/searchBar';
 import { category } from '~/configs/category';
 import { db } from '~/firebase';
+import { useSearchParams } from 'next/navigation';
 
 function Games() {
     const router = useRouter();
     const [games, setGames] = useState<QueryDocumentSnapshot<DocumentData>[]>();
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>();
+    const [showFiler, setShowFilters] = useState<option>();
+    const [typesFilter, setTypesFilters] = useState<option[] | undefined>();
+    const searchParams = useSearchParams();
 
     useEffect(() => {
         const fecth = async () => {
             try {
+                setLoading(true);
+                const types = searchParams.getAll('type');
+                const show = searchParams.get('show');
+                setShowFilters(getCategory(show));
+                setTypesFilters((): any => {
+                    return types.map((type) => getTypeGame(type));
+                });
+
                 let q = query(collection(db, 'games'), orderBy('timestamp', 'desc'), limit(12));
 
-                if (router.query.type) {
+                if (types.length > 0) {
                     q = query(
                         collection(db, 'games'),
-                        where('type', 'in', router.query.type),
+                        where('type', 'in', types),
                         orderBy('timestamp', 'desc'),
                         limit(12),
                     );
                 }
 
-                if (router.query.show) {
+                if (show) {
                     q = query(
                         collection(db, 'games'),
-                        where('status', '==', router.query.show),
+                        where('status', '==', show),
                         orderBy('timestamp', 'desc'),
                         limit(12),
                     );
                 }
-                if (router.query.type && router.query.show) {
+                if (types.length > 0 && show) {
                     q = query(
                         collection(db, 'games'),
-                        where('type', 'in', router.query.type),
-                        where('status', '==', router.query.show),
+                        where('type', 'in', types),
+                        where('status', '==', show),
                         orderBy('timestamp', 'desc'),
                         limit(12),
                     );
@@ -65,7 +77,7 @@ function Games() {
         };
 
         fecth();
-    }, [router.query.show, router.query.type]);
+    }, [searchParams]);
 
     const handleFilter = (options: option[]) => {
         const queryParams = { type: options.map((option) => option.value) };
@@ -89,7 +101,7 @@ function Games() {
                 <div className="col-span-12 md:col-span-9">
                     <div className="py-3">
                         <span className="text-neutral-100/[0.7] text-sm">Show: </span>
-                        <DropDown initValue={category[0]} options={category} onChange={handelDropChange} />
+                        <DropDown selectedOption={showFiler} options={category} onChange={handelDropChange} />
                     </div>
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-12">
                         {loading
@@ -118,7 +130,9 @@ function Games() {
                     </div>
                 </div>
                 <div className="col-span-12 md:col-span-3">
-                    <Filter onChange={handleFilter} />
+                    <div className=" sticky top-24">
+                        <Filter seletedFilters={typesFilter} onChange={handleFilter} />
+                    </div>
                 </div>
             </div>
         </Page>
