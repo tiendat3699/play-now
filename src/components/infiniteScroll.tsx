@@ -2,18 +2,21 @@ import { ReactNode, useEffect, useRef } from 'react';
 
 interface InfiniteScrollProps {
     children: ReactNode;
-    hasMore: boolean;
-    loadMore: () => any;
+    className?: string;
+    hasMore?: boolean;
+    loading?: boolean;
+    loader?: ReactNode;
+    loadMore?: () => any;
 }
 
-function InfiniteScroll({ children, hasMore, loadMore }: InfiniteScrollProps) {
+function InfiniteScroll({ children, className, loading, loader, hasMore, loadMore }: InfiniteScrollProps) {
     const pageEndRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         if (hasMore) {
             const pageEnd = pageEndRef.current;
             const observer: IntersectionObserver = new IntersectionObserver((entries) => {
                 if (entries[0].isIntersecting) {
-                    loadMore();
+                    loadMore?.();
                 }
             });
 
@@ -25,8 +28,9 @@ function InfiniteScroll({ children, hasMore, loadMore }: InfiniteScrollProps) {
         }
     }, [hasMore, loadMore]);
     return (
-        <div>
+        <div className={className}>
             {children}
+            {loading && loader}
             {hasMore && <div ref={pageEndRef} />}
         </div>
     );

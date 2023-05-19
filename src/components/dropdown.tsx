@@ -8,13 +8,13 @@ interface DropDownProps {
     options: option[];
     placeHolder?: string;
     selectedOption?: option;
-    onChange?: (value: string) => any;
+    onChange?: (value: option) => any;
 }
 
 function DropDown({ options, placeHolder, selectedOption, onChange }: DropDownProps) {
     const [showOptions, setShowOptions] = useState<boolean>(false);
     const handleSelect = (option: option) => {
-        onChange?.(option.value);
+        onChange?.(option);
         setShowOptions(false);
     };
 

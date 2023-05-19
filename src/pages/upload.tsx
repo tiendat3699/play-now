@@ -9,7 +9,7 @@ import Page from '~/components/page';
 import TextArea from '~/components/textArea';
 import TextEditor from '~/components/textEditor';
 import TextField from '~/components/textField';
-import { typesGame } from '~/configs/category';
+import { option, typesGame } from '~/configs/category';
 import InputFile from '~/components/inputFile';
 import Button from '~/components/button';
 import { gameService } from '~/services';
@@ -28,7 +28,7 @@ function Upload() {
     const [titleColor, setTitleColor] = useState<string>('');
     const [shortDescription, setShortDescription] = useState<string>('');
     const [description, setDescription] = useState<string>('');
-    const [type, setType] = useState<string>(typesGame[0].value);
+    const [type, setType] = useState<option>(typesGame[0]);
     const [comminsoon, setComminsoon] = useState<boolean>(false);
     const [coverImage, setCoverImage] = useState<File>();
     const [loaderFile, setLoaderFile] = useState<File>();
@@ -45,12 +45,12 @@ function Upload() {
 
     const handelSumbit = () => {
         const gamdata: gameData = {
+            type: type.value,
             title,
             titleColor,
             description,
             shortDescription,
             poster: user?.displayName || 'Unname',
-            type,
             status: comminsoon ? releaseStatus.comming : releaseStatus.release,
             coverImage,
             loaderFile,
@@ -133,7 +133,7 @@ function Upload() {
                         <div className="mb-3 flex sm:items-center justify-between flex-col sm:flex-row">
                             <div className="py-3">
                                 <span className="font-medium text-sm">Genre: </span>
-                                <DropDown onChange={setType} initValue={typesGame[0]} options={typesGame} />
+                                <DropDown onChange={setType} selectedOption={type} options={typesGame} />
                             </div>
                             <ColorField
                                 onChange={setTitleColor}
