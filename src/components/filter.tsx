@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { CgSearch, CgCheck } from 'react-icons/cg';
 import { RiArrowDropDownLine } from 'react-icons/ri';
-import { option } from './dropdown';
+import { option } from '~/configs/category';
 import TextField from './textField';
 import { typesGame } from '~/configs/category';
 
 interface FilterProps {
+    seletedFilters?: option[];
     onChange?: (options: option[]) => any;
 }
 
-function Filter({ onChange }: FilterProps) {
-    const [seletedFilters, setSeletedFilters] = useState<option[]>([]);
+function Filter({ seletedFilters = [], onChange }: FilterProps) {
     const [showFilters, setShowFilters] = useState<boolean>(false);
 
     const handleSelectFilter = (filter: option) => {
@@ -22,8 +22,6 @@ function Filter({ onChange }: FilterProps) {
             } else {
                 seletedFilters.push(filter);
             }
-
-            setSeletedFilters([...seletedFilters]);
             onChange?.([...seletedFilters]);
         }
     };
@@ -35,7 +33,6 @@ function Filter({ onChange }: FilterProps) {
                 <button
                     className="text-[11px] py-3 hover:text-neutral-100/[0.7]"
                     onClick={() => {
-                        setSeletedFilters([]);
                         onChange?.([]);
                     }}
                 >

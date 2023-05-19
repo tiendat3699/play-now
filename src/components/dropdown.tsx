@@ -1,27 +1,20 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import Tippy from '@tippyjs/react/headless';
 import { RiArrowDropDownLine } from 'react-icons/ri';
 import { motion } from 'framer-motion';
-
-export type option = {
-    lable: string;
-    value: string;
-};
+import { option } from '~/configs/category';
 
 interface DropDownProps {
     options: option[];
     placeHolder?: string;
-    initValue?: option;
-    onChange?: (value: string) => any;
+    selectedOption?: option;
+    onChange?: (value: option) => any;
 }
 
-function DropDown({ options, placeHolder, initValue, onChange }: DropDownProps) {
-    const [selectedOption, setSelectedOption] = useState<option | undefined>(initValue);
+function DropDown({ options, placeHolder, selectedOption, onChange }: DropDownProps) {
     const [showOptions, setShowOptions] = useState<boolean>(false);
-
     const handleSelect = (option: option) => {
-        onChange?.(option.value);
-        setSelectedOption(option);
+        onChange?.(option);
         setShowOptions(false);
     };
 

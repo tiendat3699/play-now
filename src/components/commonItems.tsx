@@ -47,8 +47,7 @@ function CommonItem({
                             width={300}
                             height={600}
                             className="w-full h-full object-cover object-center rounded"
-                            placeholder="blur"
-                            blurDataURL="/placeholder.jpg"
+                            priority
                         />
                     ) : (
                         <SkeletonElement height={'100%'} />

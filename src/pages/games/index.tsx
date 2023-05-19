@@ -1,85 +1,125 @@
 import {
     DocumentData,
+    QueryConstraint,
     QueryDocumentSnapshot,
     collection,
+    getCountFromServer,
     getDocs,
     limit,
     orderBy,
     query,
+    startAfter,
     where,
 } from 'firebase/firestore';
 import { useRouter } from 'next/router';
 import { ReactNode, useEffect, useState } from 'react';
-import { useCollectionOnce } from 'react-firebase-hooks/firestore';
 import CommonItem from '~/components/commonItems';
-import DropDown, { option } from '~/components/dropdown';
+import DropDown from '~/components/dropdown';
+import { getCategory, getTypeGame, option } from '~/configs/category';
 import Filter from '~/components/filter';
 import Page from '~/components/page';
 import SearchBar from '~/components/searchBar';
 import { category } from '~/configs/category';
 import { db } from '~/firebase';
+import { useSearchParams } from 'next/navigation';
+import InfiniteScroll from '~/components/infiniteScroll';
 
 function Games() {
     const router = useRouter();
-    const [games, setGames] = useState<QueryDocumentSnapshot<DocumentData>[]>();
-    const [loading, setLoading] = useState<boolean>(true);
+    const [games, setGames] = useState<QueryDocumentSnapshot<DocumentData>[]>([]);
+    const [loading, setLoading] = useState<boolean>();
+    const [queryParams, setQueryParams] = useState<{ types: option[]; show?: option }>({
+        types: [],
+        show: undefined,
+    });
+    const [lastPage, setLastPage] = useState<QueryDocumentSnapshot<DocumentData> | null>();
+    const [totalGames, setTotalGames] = useState<number>(0);
+    const searchParams = useSearchParams();
+
+    useEffect(() => {
+        const getCount = async () => {
+            const snap = await getCountFromServer(query(collection(db, 'games')));
+            setTotalGames(snap.data().count);
+        };
+        getCount();
+    }, []);
+
+    useEffect(() => {
+        const types: string[] = searchParams.getAll('type');
+        const show: string | null = searchParams.get('show');
+        if (types.length > 0 || show) {
+            setLastPage(null);
+            setQueryParams((prevState) => {
+                return {
+                    ...prevState,
+                    types: types.map((type): any => getTypeGame(type)),
+                    show: getCategory(show),
+                };
+            });
+        }
+    }, [searchParams]);
 
     useEffect(() => {
         const fecth = async () => {
             try {
-                let q = query(collection(db, 'games'), orderBy('timestamp', 'desc'), limit(12));
-
-                if (router.query.type) {
-                    q = query(
-                        collection(db, 'games'),
-                        where('type', 'in', router.query.type),
-                        orderBy('timestamp', 'desc'),
-                        limit(12),
+                setLoading(true);
+                const queryConstraints: QueryConstraint[] = [orderBy('timestamp', 'desc'), limit(8)];
+                if (queryParams.types.length > 0) {
+                    queryConstraints.push(
+                        where(
+                            'type',
+                            'in',
+                            queryParams.types.map((type) => type.value),
+                        ),
                     );
                 }
 
-                if (router.query.show) {
-                    q = query(
-                        collection(db, 'games'),
-                        where('status', '==', router.query.show),
-                        orderBy('timestamp', 'desc'),
-                        limit(12),
-                    );
-                }
-                if (router.query.type && router.query.show) {
-                    q = query(
-                        collection(db, 'games'),
-                        where('type', 'in', router.query.type),
-                        where('status', '==', router.query.show),
-                        orderBy('timestamp', 'desc'),
-                        limit(12),
-                    );
+                if (queryParams.show && queryParams.show.value != 'all') {
+                    queryConstraints.push(where('status', '==', queryParams.show.value));
                 }
 
-                const docSnap = await getDocs(q);
-                setGames(docSnap.docs);
-                setLoading(false);
+                if (lastPage) {
+                    queryConstraints.push(startAfter(lastPage));
+                    let q = query(collection(db, 'games'), ...queryConstraints);
+                    const docSnap = await getDocs(q);
+                    setGames((prevState) => prevState.concat(docSnap.docs));
+                    setLoading(false);
+                } else {
+                    let q = query(collection(db, 'games'), ...queryConstraints);
+                    const docSnap = await getDocs(q);
+                    setGames(docSnap.docs);
+                    setLoading(false);
+                }
             } catch (error) {
                 console.log(error);
             }
         };
 
         fecth();
-    }, [router.query.show, router.query.type]);
+    }, [lastPage, queryParams]);
+
+    const handleSetlastGame = () => {
+        if (games.length > 0) {
+            setLastPage(games[games.length - 1]);
+        }
+    };
 
     const handleFilter = (options: option[]) => {
         const queryParams = { type: options.map((option) => option.value) };
         router.push({ query: { ...router.query, ...queryParams } });
     };
 
-    const handelDropChange = (value: string) => {
-        const queryParams = { show: value };
-        if (value == 'all') {
-            delete router.query.show;
-            router.push({ query: { ...router.query } });
-        } else {
-            router.push({ query: { ...router.query, ...queryParams } });
+    const handelDropChange = (option: option) => {
+        const queryParams = { show: option.value };
+        router.push({ query: { ...router.query, ...queryParams } });
+    };
+
+    const renderLoader = (): ReactNode[] => {
+        const renders: ReactNode[] = [];
+        for (let i = 0; i < 4; i++) {
+            renders.push(<CommonItem key={i} thumb="" link="" title="" preview={false} loading />);
         }
+        return renders;
     };
 
     return (
@@ -89,36 +129,34 @@ function Games() {
                 <div className="col-span-12 md:col-span-9">
                     <div className="py-3">
                         <span className="text-neutral-100/[0.7] text-sm">Show: </span>
-                        <DropDown initValue={category[0]} options={category} onChange={handelDropChange} />
+                        <DropDown selectedOption={queryParams.show} options={category} onChange={handelDropChange} />
                     </div>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-12">
-                        {loading
-                            ? ((): ReactNode[] => {
-                                  const renders: ReactNode[] = [];
-                                  for (let i = 0; i < 12; i++) {
-                                      renders.push(
-                                          <CommonItem key={i} thumb="" link="" title="" preview={false} loading />,
-                                      );
-                                  }
-                                  return renders;
-                              })()
-                            : games?.map((doc) => {
-                                  const game = doc.data();
-                                  return (
-                                      <CommonItem
-                                          key={doc.id}
-                                          title={game.title}
-                                          thumb={game.coverImageUrl}
-                                          poster={game.poster}
-                                          link={`games/${doc.id}`}
-                                          description={game.shortDescription}
-                                      />
-                                  );
-                              })}
-                    </div>
+                    <InfiniteScroll
+                        loader={renderLoader()}
+                        loadMore={handleSetlastGame}
+                        loading={loading}
+                        hasMore={games.length < totalGames}
+                        className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 gap-y-12"
+                    >
+                        {games?.map((doc) => {
+                            const game = doc.data();
+                            return (
+                                <CommonItem
+                                    key={doc.id}
+                                    title={game.title}
+                                    thumb={game.coverImageUrl}
+                                    poster={game.poster}
+                                    link={`games/${doc.id}`}
+                                    description={game.shortDescription}
+                                />
+                            );
+                        })}
+                    </InfiniteScroll>
                 </div>
                 <div className="col-span-12 md:col-span-3">
-                    <Filter onChange={handleFilter} />
+                    <div className=" sticky top-24">
+                        <Filter seletedFilters={queryParams.types} onChange={handleFilter} />
+                    </div>
                 </div>
             </div>
         </Page>
