@@ -44,13 +44,15 @@ function Upload() {
     const router = useRouter();
 
     const handelSumbit = () => {
+        if (!user) return;
         const gamdata: gameData = {
             type: type.value,
             title,
             titleColor,
             description,
             shortDescription,
-            poster: user?.displayName || 'Unname',
+            userId: user.uid,
+            userName: user.displayName || 'UnName',
             status: comminsoon ? releaseStatus.comming : releaseStatus.release,
             coverImage,
             loaderFile,
