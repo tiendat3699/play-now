@@ -8,7 +8,7 @@ import SearchBar from '~/components/searchBar';
 
 import { collection, getDocs, limit, orderBy, query, where } from 'firebase/firestore';
 import { db } from '~/firebase';
-import queryToSlide from '~/utils/queryToSlide';
+import { queryToSlide } from '~/utils';
 import { GetStaticProps } from 'next';
 
 interface HomeProps {
@@ -18,16 +18,6 @@ interface HomeProps {
 }
 
 export default function Home({ newGamesUpload, newGamesReleae, upcommingGames }: HomeProps) {
-    // const [popularGames, loadingPopular] = useCollectionOnce(
-    //     query(collection(db, 'games'), orderBy('timestamp', 'desc'), limit(6)),
-    // );
-    // const [newGames, newGameLoading] = useCollectionOnce(
-    //     query(collection(db, 'games'), where('status', '==', 'release'), orderBy('timestamp', 'desc'), limit(10)),
-    // );
-    // const [upcommingGames, upcommingGameLoading] = useCollectionOnce(
-    //     query(collection(db, 'games'), where('status', '==', 'comming'), limit(10)),
-    // );
-
     return (
         <Page title="Free indie games | Play & upload your game">
             <SearchBar />

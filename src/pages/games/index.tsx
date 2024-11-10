@@ -145,7 +145,7 @@ function Games() {
                                     key={doc.id}
                                     title={game.title}
                                     thumb={game.coverImageUrl}
-                                    poster={game.poster}
+                                    poster={game.userName}
                                     link={`games/${doc.id}`}
                                     description={game.shortDescription}
                                 />

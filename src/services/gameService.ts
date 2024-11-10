@@ -1,4 +1,4 @@
-import { addDoc, collection, serverTimestamp, setDoc } from 'firebase/firestore';
+import { DocumentData, DocumentReference, addDoc, collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
 import { db } from '~/firebase';
 import { uploadFile } from '~/utils';
 import { v4 } from 'uuid';
@@ -14,7 +14,8 @@ export type gameData = {
     titleColor: string;
     shortDescription?: string;
     description: string;
-    poster?: string;
+    userId: string;
+    userName: string;
     type: string;
     status: releaseStatus;
     coverImage?: File;
@@ -30,7 +31,8 @@ type uploadData = {
     description: string;
     type: string;
     status: releaseStatus;
-    poster?: string;
+    userName: string;
+    userRef: DocumentReference<DocumentData>;
     shortDescription?: string;
     coverImage?: string;
     coverImageUrl?: string;
@@ -55,7 +57,8 @@ const gameService = {
                 type: gameData.type,
                 status: gameData.status,
                 shortDescription: gameData.shortDescription,
-                poster: gameData.poster,
+                userRef: doc(db, 'users/' + gameData.userId),
+                userName: gameData.userName,
             };
 
             if (gameData.coverImage) {

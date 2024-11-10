@@ -11,7 +11,6 @@ interface NavLinkProps {
 
 function NavLink({ href, children, className }: NavLinkProps) {
     const pathname = usePathname();
-
     const getClasses = (): string | undefined => {
         if (typeof className === 'string') return className;
         else return className ? className(pathname == href) : undefined;

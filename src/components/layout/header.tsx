@@ -1,27 +1,29 @@
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
 import { signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
 import { useAuthState } from 'react-firebase-hooks/auth';
-import { auth } from '~/firebase';
+import { auth, db } from '~/firebase';
 
 import NavLink from '../navLink';
 import { RiUpload2Fill, RiGoogleFill, RiLogoutBoxRLine } from 'react-icons/ri';
 import { AiOutlineLoading } from 'react-icons/ai';
 import Tippy from '@tippyjs/react/headless';
+import { collection, doc, setDoc } from 'firebase/firestore';
 
 type NavItem = {
     title: string;
     href: string;
     icon?: ReactNode;
     separate?: boolean;
+    private?: boolean;
 };
 
 const navItems: NavItem[] = [
     { title: 'HOME', href: '/' },
     { title: 'GAMES', href: '/games' },
-    { title: 'MY GAMES', href: '/my-games' },
+    { title: 'MY GAMES', href: '/', private: true },
     { title: 'ABOUT', href: '/about' },
     { title: 'CONTACT', href: '/contact' },
     { title: 'UPLOAD GAME', href: '/upload', separate: true, icon: <RiUpload2Fill /> },
@@ -34,7 +36,12 @@ function Header() {
         if (!loading) {
             try {
                 const provider = new GoogleAuthProvider();
-                await signInWithPopup(auth, provider);
+                const res = await signInWithPopup(auth, provider);
+                await setDoc(doc(db, 'users', res.user.uid), {
+                    displayName: res.user.displayName,
+                    photoURL: res.user.photoURL,
+                    email: res.user.email,
+                });
             } catch (error) {
                 console.log(error);
             }
@@ -84,18 +91,25 @@ function Header() {
                     {navItems.map((navItem) => {
                         const checkActive = (active: boolean): string =>
                             `
-                        flex items-center px-2.5 relative transition-all duration-200 h-13
-                        after:transition-all after:duration-200
-                        after:absolute after:bottom-0 after:left-0 after:right-0 after:bg-accent
-                        hover:text-white
-                        hover:after:h-1
-                        ${
-                            navItem.separate
-                                ? 'ml-6 before:absolute before:inset-y-3 before:-left-3 before:bg-[#ccc] before:w-px'
-                                : ''
+                            flex items-center px-2.5 relative transition-all duration-200 h-13
+                            after:transition-all after:duration-200
+                            after:absolute after:bottom-0 after:left-0 after:right-0 after:bg-accent
+                            hover:text-white
+                            hover:after:h-1
+                            ${
+                                navItem.separate
+                                    ? 'ml-6 before:absolute before:inset-y-3 before:-left-3 before:bg-[#ccc] before:w-px'
+                                    : ''
+                            }
+                            ${active ? 'after:h-1' : 'after:h-0'}
+                        `;
+                        if (navItem.private) {
+                            if (!user) {
+                                return;
+                            } else {
+                                navItem.href = '/users/' + user.uid;
+                            }
                         }
-                        ${active ? 'after:h-1' : 'after:h-0'}
-                    `;
                         return (
                             <li key={navItem.title}>
                                 <NavLink href={navItem.href} className={checkActive}>

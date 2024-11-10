@@ -1,16 +1,18 @@
 import dynamic from 'next/dynamic';
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useUnityContext } from 'react-unity-webgl';
 import Tippy from '@tippyjs/react';
 import Page from '~/components/page';
 import SearchBar from '~/components/searchBar';
 import { BiFullscreen } from 'react-icons/bi';
 import { collection, doc, getDoc, getDocs } from 'firebase/firestore';
-import { db } from '~/firebase';
+import { db, dbRealTime } from '~/firebase';
+import { useList } from 'react-firebase-hooks/database';
 import TextEditorReadOnly from '~/components/textEditorReadOnly';
 import { releaseStatus } from '~/services/gameService';
 import { IoLogoGameControllerA } from 'react-icons/io';
+import { ref } from 'firebase/database';
 
 const Unity = dynamic(
     async () => {
@@ -49,6 +51,9 @@ function GameDetail({
         UNSAFE__unityInstance,
         isLoaded,
         requestFullscreen,
+        addEventListener,
+        removeEventListener,
+        sendMessage,
         UNSAFE__detachAndUnloadImmediate: detachAndUnloadImmediate,
     } = useUnityContext({
         loaderUrl,
@@ -56,6 +61,8 @@ function GameDetail({
         frameworkUrl,
         codeUrl,
     });
+
+    const [snapshots, loading, error] = useList(ref(dbRealTime, 'API'));
 
     useEffect(() => {
         return () => {
@@ -66,6 +73,20 @@ function GameDetail({
             }
         };
     }, [detachAndUnloadImmediate, UNSAFE__unityInstance]);
+
+    const SendAPI = useCallback(() => {
+        if (snapshots) {
+            const data = snapshots.map((v) => v.toJSON());
+            sendMessage('ReactCommunicate', 'SetData', JSON.stringify(data[0]));
+        }
+    }, [sendMessage, snapshots]);
+
+    useEffect(() => {
+        addEventListener('Ready', SendAPI);
+        return () => {
+            removeEventListener('Ready', SendAPI);
+        };
+    }, [SendAPI, addEventListener, removeEventListener]);
 
     return (
         <Page title={title}>
